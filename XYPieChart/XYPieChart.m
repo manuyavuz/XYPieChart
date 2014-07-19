@@ -157,6 +157,8 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
         
         _showLabel = YES;
         _showPercentage = YES;
+        _selectedSliceTransform = CATransform3DIdentity;
+        _deselectedSliceTransform = CATransform3DIdentity;
     }
     return self;
 }
@@ -198,6 +200,8 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
         
         _showLabel = YES;
         _showPercentage = YES;
+        _selectedSliceTransform = CATransform3DIdentity;
+        _deselectedSliceTransform = CATransform3DIdentity;
     }
     return self;
 }
@@ -366,6 +370,8 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
                     }
                 }
             }
+            layer.frame = parentLayer.bounds;
+            layer.position = CGPointMake(parentLayer.bounds.size.width/2, parentLayer.bounds.size.height/2);
             
             layer.value = values[index];
             layer.percentage = (sum)?layer.value/sum:0;
@@ -591,10 +597,11 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
         return;
     SliceLayer *layer = [_pieView.layer.sublayers objectAtIndex:index];
     if (layer && !layer.isSelected) {
-        CGPoint currPos = layer.position;
-        double middleAngle = (layer.startAngle + layer.endAngle)/2.0;
-        CGPoint newPos = CGPointMake(currPos.x + _selectedSliceOffsetRadius*cos(middleAngle), currPos.y + _selectedSliceOffsetRadius*sin(middleAngle));
-        layer.position = newPos;
+        layer.transform = self.selectedSliceTransform;
+//        CGPoint currPos = layer.position;
+//        double middleAngle = (layer.startAngle + layer.endAngle)/2.0;
+//        CGPoint newPos = CGPointMake(currPos.x + _selectedSliceOffsetRadius*cos(middleAngle), currPos.y + _selectedSliceOffsetRadius*sin(middleAngle));
+//        layer.position = newPos;
         layer.isSelected = YES;
     }
 }
@@ -605,7 +612,8 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
         return;
     SliceLayer *layer = [_pieView.layer.sublayers objectAtIndex:index];
     if (layer && layer.isSelected) {
-        layer.position = CGPointMake(0, 0);
+//        layer.position = CGPointMake(0, 0);
+        layer.transform = self.deselectedSliceTransform;
         layer.isSelected = NO;
     }
 }

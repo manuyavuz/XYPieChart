@@ -61,6 +61,12 @@
 @property(nonatomic, assign) CGFloat selectedSliceStroke;
 @property(nonatomic, assign) CGFloat selectedSliceOffsetRadius;
 @property(nonatomic, assign) BOOL    showPercentage;
+/**
+ These are used to customize slice animations of selecting and deselecting slices.
+ */
+@property (nonatomic, assign) CATransform3D selectedSliceTransform;
+@property (nonatomic, assign) CATransform3D deselectedSliceTransform;
+
 - (id)initWithFrame:(CGRect)frame Center:(CGPoint)center Radius:(CGFloat)radius;
 - (void)reloadData;
 - (void)setPieBackgroundColor:(UIColor *)color;
