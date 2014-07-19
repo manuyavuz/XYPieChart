@@ -61,6 +61,11 @@
 @property(nonatomic, assign) CGFloat selectedSliceStroke;
 @property(nonatomic, assign) CGFloat selectedSliceOffsetRadius;
 @property(nonatomic, assign) BOOL    showPercentage;
+
+/**
+ Default is NO
+ */
+@property (nonatomic, assign) BOOL          shouldApplySliceTransforms;
 /**
  These are used to customize slice animations of selecting and deselecting slices.
  */

@@ -157,6 +157,7 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
         
         _showLabel = YES;
         _showPercentage = YES;
+        _shouldApplySliceTransforms = NO;
         _selectedSliceTransform = CATransform3DIdentity;
         _deselectedSliceTransform = CATransform3DIdentity;
     }
@@ -200,6 +201,7 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
         
         _showLabel = YES;
         _showPercentage = YES;
+        _shouldApplySliceTransforms = NO;
         _selectedSliceTransform = CATransform3DIdentity;
         _deselectedSliceTransform = CATransform3DIdentity;
     }
@@ -550,19 +552,26 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
 - (void)notifyDelegateOfSelectionChangeFrom:(NSUInteger)previousSelection to:(NSUInteger)newSelection
 {
     if (previousSelection != newSelection){
+        // call willDeselect
+        if(previousSelection != -1){
+            if ([_delegate respondsToSelector:@selector(pieChart:willDeselectSliceAtIndex:)])
+                [_delegate pieChart:self willDeselectSliceAtIndex:previousSelection];
+        }
+        // call willSelect
+        if (newSelection != -1){
+            if([_delegate respondsToSelector:@selector(pieChart:willSelectSliceAtIndex:)])
+                [_delegate pieChart:self willSelectSliceAtIndex:newSelection];
+        }
+        // call didDeselect
         if(previousSelection != -1){
             NSUInteger tempPre = previousSelection;
-            if ([_delegate respondsToSelector:@selector(pieChart:willDeselectSliceAtIndex:)])
-                [_delegate pieChart:self willDeselectSliceAtIndex:tempPre];
             [self setSliceDeselectedAtIndex:tempPre];
             previousSelection = newSelection;
             if([_delegate respondsToSelector:@selector(pieChart:didDeselectSliceAtIndex:)])
                 [_delegate pieChart:self didDeselectSliceAtIndex:tempPre];
         }
-        
+        // call didSelect
         if (newSelection != -1){
-            if([_delegate respondsToSelector:@selector(pieChart:willSelectSliceAtIndex:)])
-                [_delegate pieChart:self willSelectSliceAtIndex:newSelection];
             [self setSliceSelectedAtIndex:newSelection];
             _selectedSliceIndex = newSelection;
             if([_delegate respondsToSelector:@selector(pieChart:didSelectSliceAtIndex:)])
@@ -591,17 +600,24 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
 }
 #pragma mark - Selection Programmatically Without Notification
 
+
 - (void)setSliceSelectedAtIndex:(NSInteger)index
 {
     if(_selectedSliceOffsetRadius <= 0)
         return;
     SliceLayer *layer = [_pieView.layer.sublayers objectAtIndex:index];
     if (layer && !layer.isSelected) {
-        layer.transform = self.selectedSliceTransform;
-//        CGPoint currPos = layer.position;
-//        double middleAngle = (layer.startAngle + layer.endAngle)/2.0;
-//        CGPoint newPos = CGPointMake(currPos.x + _selectedSliceOffsetRadius*cos(middleAngle), currPos.y + _selectedSliceOffsetRadius*sin(middleAngle));
-//        layer.position = newPos;
+        if(self.shouldApplySliceTransforms)
+        {
+            layer.transform = self.selectedSliceTransform;
+        }
+        else
+        {
+            CGPoint currPos = layer.position;
+            double middleAngle = (layer.startAngle + layer.endAngle)/2.0;
+            CGPoint newPos = CGPointMake(currPos.x + _selectedSliceOffsetRadius*cos(middleAngle), currPos.y + _selectedSliceOffsetRadius*sin(middleAngle));
+            layer.position = newPos;
+        }
         layer.isSelected = YES;
     }
 }
@@ -612,8 +628,16 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
         return;
     SliceLayer *layer = [_pieView.layer.sublayers objectAtIndex:index];
     if (layer && layer.isSelected) {
-//        layer.position = CGPointMake(0, 0);
-        layer.transform = self.deselectedSliceTransform;
+        if(self.shouldApplySliceTransforms)
+            layer.transform = self.deselectedSliceTransform;
+        else
+        {
+            CGPoint currPos = layer.position;
+            double middleAngle = (layer.startAngle + layer.endAngle)/2.0;
+            CGPoint newPos = CGPointMake(currPos.x - _selectedSliceOffsetRadius*cos(middleAngle), currPos.y - _selectedSliceOffsetRadius*sin(middleAngle));
+            layer.position = newPos;
+
+        }
         layer.isSelected = NO;
     }
 }
