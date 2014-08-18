@@ -506,7 +506,7 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
 //            [pieLayer setStrokeColor:[UIColor whiteColor].CGColor];
 //            [pieLayer setLineJoin:kCALineJoinBevel];
 //            [pieLayer setZPosition:MAXFLOAT];
-//            selectedIndex = idx;
+            selectedIndex = idx;
         } else {
 //            [pieLayer setZPosition:kDefaultSliceZOrder];
 //            [pieLayer setLineWidth:0.0];
