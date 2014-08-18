@@ -502,14 +502,14 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
         CGPathRef path = [pieLayer path];
         
         if (CGPathContainsPoint(path, &transform, point, 0)) {
-            [pieLayer setLineWidth:_selectedSliceStroke];
-            [pieLayer setStrokeColor:[UIColor whiteColor].CGColor];
-            [pieLayer setLineJoin:kCALineJoinBevel];
-            [pieLayer setZPosition:MAXFLOAT];
-            selectedIndex = idx;
+//            [pieLayer setLineWidth:_selectedSliceStroke];
+//            [pieLayer setStrokeColor:[UIColor whiteColor].CGColor];
+//            [pieLayer setLineJoin:kCALineJoinBevel];
+//            [pieLayer setZPosition:MAXFLOAT];
+//            selectedIndex = idx;
         } else {
-            [pieLayer setZPosition:kDefaultSliceZOrder];
-            [pieLayer setLineWidth:0.0];
+//            [pieLayer setZPosition:kDefaultSliceZOrder];
+//            [pieLayer setLineWidth:0.0];
         }
     }];
     return selectedIndex;
