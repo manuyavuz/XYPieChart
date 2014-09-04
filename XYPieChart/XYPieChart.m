@@ -222,6 +222,9 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
     _pieCenter = CGPointMake(frame.size.width/2, frame.size.height/2);
     [_pieView setFrame:frame];
     [_pieView.layer setCornerRadius:_pieRadius];
+    _pieView.layer.masksToBounds = NO;
+    _pieView.layer.shouldRasterize = YES;
+    _pieView.layer.rasterizationScale = [UIScreen mainScreen].scale;
 }
 
 - (void)setPieBackgroundColor:(UIColor *)color
