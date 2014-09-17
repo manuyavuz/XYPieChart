@@ -208,6 +208,13 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius, CGFloat startAn
     return self;
 }
 
+- (void)setBounds:(CGRect)bounds
+{
+    [super setBounds:bounds];
+    self.pieRadius = MIN(bounds.size.width/2, bounds.size.height/2) - 10;
+    self.pieCenter = CGPointMake(bounds.size.width/2, bounds.size.height/2);
+}
+
 - (void)setPieCenter:(CGPoint)pieCenter
 {
     [_pieView setCenter:pieCenter];
